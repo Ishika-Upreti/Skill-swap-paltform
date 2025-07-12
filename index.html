@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skill Swap Platform</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <nav class="main-nav">
+  <div class="nav-left">
+    <img src="/logo.png" alt="Logo" class="nav-logo" />
+    <h1>Skill Swap Platform</h1>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/register">Register</a>
+    <a href="/login">Login</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/swap_requests">Swap Requests</a>
+  </div>
+</nav>
+
+  <nav>
+    <h1>
+      <img src="Brown and Beige Modern Aesthetic Fashion Store Design Logo.png" alt="Logo" />
+      Skill Swap Platform
+    </h1>
+    <button id="toggle-darkmode">Toggle Dark Mode</button>
+  </nav>
+
+  <main>
+    <h2>Create Your Profile</h2>
+    <form id="profile-form" enctype="multipart/form-data">
+      <input type="text" name="name" placeholder="Name" required />
+      <input type="text" name="location" placeholder="Location" />
+      <input type="text" name="skillsOffered" placeholder="Skills Offered (comma separated)" required />
+      <input type="text" name="skillsWanted" placeholder="Skills Wanted (comma separated)" required />
+      <input type="text" name="availability" placeholder="Availability" required />
+
+      <label>
+        <input type="checkbox" name="isPublic" />
+        Make Profile Public
+      </label>
+
+      <input type="file" name="profilePhoto" accept="image/*" />
+
+      <button type="submit">Create Profile</button>
+    </form>
+
+    <h2>Public Profiles</h2>
+    <div id="users-list"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

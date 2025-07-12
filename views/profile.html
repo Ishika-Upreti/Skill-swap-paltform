@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send Swap Request</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <nav>
+    <h1><img src="/logo.png" alt="Logo" /> Skill Swap Platform</h1>
+    <a href="/dashboard"><button>Dashboard</button></a>
+    <a href="/logout"><button>Logout</button></a>
+  </nav>
+
+  <main class="profile-view">
+    <h2>User Profile</h2>
+
+    <div id="profile-info">
+      <!-- Will be filled with JS -->
+    </div>
+
+    <h3>Send a Swap Request</h3>
+
+    <form id="swap-form">
+      <label>Your Skill:
+        <input type="text" name="yourSkill" required />
+      </label><br/>
+      <label>Requested Skill:
+        <input type="text" name="theirSkill" required />
+      </label><br/>
+      <label>Message (optional):
+        <textarea name="message" rows="3"></textarea>
+      </label><br/>
+      <button type="submit">Send Request</button>
+    </form>
+  </main>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id');
+
+    fetch(`/api/user/${userId}`)
+      .then(res => res.json())
+      .then(user => {
+        const container = document.getElementById('profile-info');
+        container.innerHTML = `
+          <p><strong>Name:</strong> ${user.name}</p>
+          <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Skills Offered:</strong> ${user.skillsOffered?.join(', ') || '-'}</p>
+          <p><strong>Skills Wanted:</strong> ${user.skillsWanted?.join(', ') || '-'}</p>
+          <p><strong>Availability:</strong> ${user.availability || '-'}</p>
+        `;
+      });
+
+    document.getElementById('swap-form').addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const body = {
+        userId,
+        yourSkill: formData.get('yourSkill'),
+        theirSkill: formData.get('theirSkill'),
+        message: formData.get('message'),
+      };
+
+      const res = await fetch('/api/swap-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const msg = await res.text();
+      alert(msg);
+      window.location.href = '/dashboard';
+    });
+  </script>
+</body>
+</html>

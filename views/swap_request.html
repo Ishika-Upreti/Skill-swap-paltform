@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Swap Requests</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <nav>
+    <h1><img src="/logo.png" alt="Logo" /> Skill Swap Platform</h1>
+    <a href="/dashboard"><button>Dashboard</button></a>
+    <a href="/logout"><button>Logout</button></a>
+  </nav>
+
+  <main class="swap-request-container">
+    <h2>Swap Requests</h2>
+
+    <section>
+      <h3>Received Requests</h3>
+      <ul id="received-requests"></ul>
+    </section>
+
+    <section>
+      <h3>Sent Requests</h3>
+      <ul id="sent-requests"></ul>
+    </section>
+  </main>
+
+  <script>
+    fetch('/api/swap-requests')
+      .then(res => res.json())
+      .then(data => {
+        const received = document.getElementById('received-requests');
+        const sent = document.getElementById('sent-requests');
+
+        data.received.forEach(req => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <strong>${req.fromName}</strong> wants to swap <em>${req.theirSkill}</em> for your <em>${req.yourSkill}</em> - Status: <strong>${req.status}</strong>
+            <br/>Message: ${req.message || '-'}
+            ${req.status === 'Pending' ? `
+              <button onclick="updateRequest(${req.id}, 'Accepted')">Accept</button>
+              <button onclick="updateRequest(${req.id}, 'Rejected')">Reject</button>
+            ` : ''}
+          `;
+          received.appendChild(li);
+        });
+
+        data.sent.forEach(req => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            To: <strong>${req.toName}</strong> – You offered <em>${req.yourSkill}</em> for <em>${req.theirSkill}</em> – Status: <strong>${req.status}</strong>
+            <br/>Message: ${req.message || '-'}
+            ${req.status === 'Pending' ? `<button onclick="deleteRequest(${req.id})">Delete</button>` : ''}
+          `;
+          sent.appendChild(li);
+        });
+      });
+
+    function updateRequest(id, status) {
+      fetch(`/api/swap-request/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      }).then(() => location.reload());
+    }
+
+    function deleteRequest(id) {
+      fetch(`/api/swap-request/${id}`, {
+        method: 'DELETE'
+      }).then(() => location.reload());
+    }
+  </script>
+</body>
+</html>
